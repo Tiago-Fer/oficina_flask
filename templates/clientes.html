@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block titulo %}Clientes{% endblock %}
+
+{% block conteudo %}
+<h1>Clientes</h1>
+
+<form method="post" class="formulario">
+  <label>Nome <input name="nome" required placeholder="Maria da Silva"></label>
+  <label>Telefone <input name="telefone" placeholder="(11) 99999-0000"></label>
+  <button type="submit">Cadastrar</button>
+</form>
+
+{% if clientes %}
+<table>
+  <thead><tr><th>#</th><th>Nome</th><th>Telefone</th><th></th></tr></thead>
+  <tbody>
+    {% for c in clientes %}
+    <tr>
+      <td>{{ c.id }}</td>
+      <td>{{ c.nome }}</td>
+      <td>{{ c.telefone or "—" }}</td>
+      <td class="acoes">
+        <form method="post" action="{{ url_for('excluir_cliente', id_=c.id) }}" onsubmit="return confirm('Excluir este cliente e tudo ligado a ele?')">
+          <button class="perigo">Excluir</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="vazio">Nenhum cliente cadastrado.</p>
+{% endif %}
+{% endblock %}

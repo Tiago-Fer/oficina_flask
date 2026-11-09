@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block titulo %}Início{% endblock %}
+
+{% block conteudo %}
+<h1>Painel</h1>
+
+<section class="cartoes">
+  <div class="cartao"><span class="numero">{{ resumo.clientes }}</span><span class="rotulo">Clientes</span></div>
+  <div class="cartao"><span class="numero">{{ resumo.veiculos }}</span><span class="rotulo">Veículos</span></div>
+  <div class="cartao"><span class="numero">{{ resumo.ordens_abertas }}</span><span class="rotulo">Ordens em aberto</span></div>
+  <div class="cartao"><span class="numero">{{ resumo.faturado | reais }}</span><span class="rotulo">Faturado (concluídas)</span></div>
+</section>
+
+<h2>Últimas ordens</h2>
+{% if ordens %}
+<table>
+  <thead><tr><th>#</th><th>Veículo</th><th>Cliente</th><th>Problema</th><th>Status</th><th>Valor</th></tr></thead>
+  <tbody>
+    {% for o in ordens %}
+    <tr>
+      <td>{{ o.id }}</td>
+      <td>{{ o.veiculo_desc }}</td>
+      <td>{{ o.cliente_nome }}</td>
+      <td>{{ o.problema }}</td>
+      <td><span class="etiqueta etiqueta-{{ o.status | lower | replace(' ', '-') | replace('í', 'i') }}">{{ o.status }}</span></td>
+      <td>{{ o.valor | reais }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="vazio">Nenhuma ordem ainda. Comece cadastrando um <a href="{{ url_for('clientes') }}">cliente</a>, depois um <a href="{{ url_for('veiculos') }}">veículo</a>, depois abra uma <a href="{{ url_for('ordens') }}">ordem</a>.</p>
+{% endif %}
+{% endblock %}

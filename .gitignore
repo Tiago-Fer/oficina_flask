@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Dados locais (a partir da v0.2)
+dados/
+*.json
+*.xlsx
+*.db
+*.sqlite3
+
+# Editor / SO
+.claude/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

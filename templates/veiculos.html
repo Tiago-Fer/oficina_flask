@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block titulo %}Veículos{% endblock %}
+
+{% block conteudo %}
+<h1>Veículos</h1>
+
+{% if clientes %}
+<form method="post" class="formulario">
+  <label>Placa <input name="placa" required placeholder="ABC1D23" maxlength="8"></label>
+  <label>Modelo <input name="modelo" placeholder="Gol 1.6"></label>
+  <label>Ano <input name="ano" placeholder="2015" maxlength="4"></label>
+  <label>Dono
+    <select name="cliente_id" required>
+      <option value="" disabled selected>Escolha...</option>
+      {% for c in clientes %}
+      <option value="{{ c.id }}">{{ c.nome }}</option>
+      {% endfor %}
+    </select>
+  </label>
+  <button type="submit">Cadastrar</button>
+</form>
+{% else %}
+<p class="vazio">Cadastre um <a href="{{ url_for('clientes') }}">cliente</a> antes de cadastrar veículos.</p>
+{% endif %}
+
+{% if veiculos %}
+<table>
+  <thead><tr><th>#</th><th>Placa</th><th>Modelo</th><th>Ano</th><th>Dono</th><th></th></tr></thead>
+  <tbody>
+    {% for v in veiculos %}
+    <tr>
+      <td>{{ v.id }}</td>
+      <td><strong>{{ v.placa }}</strong></td>
+      <td>{{ v.modelo or "—" }}</td>
+      <td>{{ v.ano or "—" }}</td>
+      <td>{{ v.cliente_nome }}</td>
+      <td class="acoes">
+        <form method="post" action="{{ url_for('excluir_veiculo', id_=v.id) }}" onsubmit="return confirm('Excluir este veículo e suas ordens?')">
+          <button class="perigo">Excluir</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% elif clientes %}
+<p class="vazio">Nenhum veículo cadastrado.</p>
+{% endif %}
+{% endblock %}

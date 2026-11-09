@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block titulo %}Ordens de serviço{% endblock %}
+
+{% block conteudo %}
+<h1>Ordens de serviço</h1>
+
+{% if veiculos %}
+<form method="post" class="formulario formulario-largo">
+  <label>Veículo
+    <select name="veiculo_id" required>
+      <option value="" disabled selected>Escolha...</option>
+      {% for v in veiculos %}
+      <option value="{{ v.id }}">{{ v.placa }} - {{ v.modelo }} ({{ v.cliente_nome }})</option>
+      {% endfor %}
+    </select>
+  </label>
+  <label>Peças <input name="pecas" placeholder="Pastilha dianteira x2"></label>
+  <label>Valor (R$) <input name="valor" placeholder="250,00" inputmode="decimal"></label>
+  <label class="campo-largo">Problema relatado <textarea name="problema" required rows="4" placeholder="Barulho ao frear"></textarea></label>
+  <label class="campo-largo">Serviços <textarea name="servicos" rows="4" placeholder="Troca de pastilhas"></textarea></label>
+  <div class="acoes-formulario"><button type="submit">Abrir ordem</button></div>
+</form>
+{% else %}
+<p class="vazio">Cadastre um <a href="{{ url_for('veiculos') }}">veículo</a> antes de abrir ordens.</p>
+{% endif %}
+
+{% if ordens %}
+<table>
+  <thead>
+    <tr><th>#</th><th>Veículo</th><th>Cliente</th><th>Problema</th><th>Serviços / Peças</th><th>Valor</th><th>Aberta</th><th>Status</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for o in ordens %}
+    <tr>
+      <td>{{ o.id }}</td>
+      <td>{{ o.veiculo_desc }}</td>
+      <td>{{ o.cliente_nome }}</td>
+      <td class="texto-longo">{{ o.problema }}</td>
+      <td class="pequeno texto-longo">{{ o.servicos or "—" }}<br>{{ o.pecas or "" }}</td>
+      <td>{{ o.valor | reais }}</td>
+      <td class="pequeno">{{ o.aberta_em }}{% if o.concluida_em %}<br>✔ {{ o.concluida_em }}{% endif %}</td>
+      <td>
+        <form method="post" action="{{ url_for('status_ordem', id_=o.id) }}">
+          <select name="status" onchange="this.form.submit()" class="status-{{ o.status | lower | replace(' ', '-') | replace('í', 'i') }}">
+            {% for s in status_opcoes %}
+            <option value="{{ s }}" {{ 'selected' if s == o.status }}>{{ s }}</option>
+            {% endfor %}
+          </select>
+        </form>
+      </td>
+      <td class="acoes">
+        <form method="post" action="{{ url_for('excluir_ordem', id_=o.id) }}" onsubmit="return confirm('Excluir esta ordem?')">
+          <button class="perigo">Excluir</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% elif veiculos %}
+<p class="vazio">Nenhuma ordem aberta.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Oficina{% endblock %} · Oficina v0.1</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='estilo.css') }}">
+</head>
+<body>
+  <header class="topo">
+    <a class="marca" href="{{ url_for('index') }}">🔧 Oficina</a>
+    <nav>
+      <a href="{{ url_for('index') }}" class="{{ 'ativo' if request.endpoint == 'index' }}">Início</a>
+      <a href="{{ url_for('clientes') }}" class="{{ 'ativo' if request.endpoint == 'clientes' }}">Clientes</a>
+      <a href="{{ url_for('veiculos') }}" class="{{ 'ativo' if request.endpoint == 'veiculos' }}">Veículos</a>
+      <a href="{{ url_for('ordens') }}" class="{{ 'ativo' if request.endpoint == 'ordens' }}">Ordens de serviço</a>
+    </nav>
+    <span class="versao">v0.1 · memória</span>
+  </header>
+
+  <main>
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+      {% for categoria, texto in mensagens %}
+        <div class="aviso aviso-{{ categoria }}">{{ texto }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    {% block conteudo %}{% endblock %}
+  </main>
+
+  <footer>
+    v0.1 — Os dados ficam só em memória e somem ao fechar o servidor.
+  </footer>
+</body>
+</html>
